@@ -3,6 +3,7 @@ import subprocess
 import time
 import os
 from evdev import InputDevice, categorize, ecodes
+from conf.Config import Config
 
 class Main:
 
@@ -42,7 +43,6 @@ class Main:
       print ('Could not get the grab board')
       return False
 
-
   def run(self):
     for event in self.dev.read_loop():
       if event.type == ecodes.EV_KEY:
@@ -68,7 +68,6 @@ class Main:
     if(self.initialize() is not True):
       print ('Could not initialize; Exiting!')
       return
-
     self.run()
     time.sleep(0.01)
     self.cleanUp()
