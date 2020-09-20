@@ -4,8 +4,6 @@ import time
 import os
 from evdev import InputDevice, categorize, ecodes
 
-
-
 class Main:
 
   def OpenSlack(self):
@@ -29,8 +27,21 @@ class Main:
     #boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
 
   def initialize(self):
-    print('Starting the macro service')
-    self.dev.grab()
+    try:
+      cmdFindBoardEvent = 'grep -A 5 -w \'"SEM USB Keyboard"\' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
+      proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
+      boardEvent = proc.communicate()[0]
+      boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
+      boardEventFullPath = '/dev/input/'  + boardEvent
+      print (boardEventFullPath)
+      self.dev = InputDevice(boardEventFullPath)
+      print('Starting the macro service')
+      self.dev.grab()
+      return True
+    except:
+      print ('Could not get the grab board')
+      return False
+
 
   def run(self):
     for event in self.dev.read_loop():
@@ -54,16 +65,10 @@ class Main:
       self.dev.ungrab()
 
   def __init__(self):
-    #TODO: Put this in a function and use try catch blocks and handle the errors
-    cmdFindBoardEvent = 'grep -A 5 -w \'"SEM USB Keyboard"\' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
-    proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
-    boardEvent = proc.communicate()[0]
-    boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
-    boardEventFullPath = '/dev/input/'  + boardEvent
-    print (boardEventFullPath)
-    self.dev = InputDevice(boardEventFullPath)
+    if(self.initialize() is not True):
+      print ('Could not initialize; Exiting!')
+      return
 
-    self.initialize()
     self.run()
     time.sleep(0.01)
     self.cleanUp()

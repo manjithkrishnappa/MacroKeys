@@ -1,5 +1,5 @@
 
-class config:
+class Config:
     def __init__(self):
         print ("Config Constructor")
     
