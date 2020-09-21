@@ -29,6 +29,7 @@ class Config:
     
     def _createDefaultConf(self):
         data = {}
+        #TODO: Create a better default fie.
         data['width'] = 932
         data['height'] = 865
         with open(self._fileNameWithPath, 'w') as outfile:
