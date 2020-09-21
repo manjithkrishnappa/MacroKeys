@@ -39,8 +39,14 @@ class Board:
                         self.OpenSlack()
                     if key.keycode == 'KEY_KP2':
                         self.OpenBlueJeans()
-                    if key.keycode == 'KEY_KP3':
+                    if key.keycode == 'KEY_A':
                         self.TypeGitAdd()
+                    if key.keycode == 'KEY_C':
+                        self.TypeGitCommit()
+                    if key.keycode == 'KEY_S':
+                        self.TypeGitPush()
+                    if key.keycode == 'KEY_L':
+                        self.TypeGitPull()
 
     def cleanUp(self):
         self.dev.ungrab()
@@ -68,3 +74,17 @@ class Board:
         os.system('xdotool type "git add -u"')
         time.sleep(1)
         os.system('xdotool key Return')
+
+    def TypeGitCommit(self):
+        os.system('xdotool type "git commit -m"')
+
+    def TypeGitPush(self):
+        os.system('xdotool type "git push"')
+        time.sleep(1)
+        os.system('xdotool key Return')
+
+    def TypeGitPull(self):
+        os.system('xdotool type "git pull"')
+        time.sleep(1)
+        os.system('xdotool key Return')
+    
