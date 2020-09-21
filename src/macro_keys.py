@@ -8,9 +8,9 @@ class Main:
 
   def initialize(self):
     try:
-      if(self.board.initialize() is not True):
-        return false
       if(self.conf.initialize() is not True):
+        return false
+      if(self.board.initialize() is not True):
         return false
       return True
     except:
