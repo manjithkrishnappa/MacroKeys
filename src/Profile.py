@@ -1,6 +1,9 @@
 from conf.Config import Config
+from Action import Action
 
 class Profile:
+
+    _actions = []
 
     def __init__(self ):
         print ('Profile Constructor')
@@ -12,7 +15,10 @@ class Profile:
             print ('Could not get the profile data from configuration!')
             return False
         # print ('Profile Data:' + str(profileData))
-        actions = profileData['actions']
-        for action in actions:
-            print ('Action Data:' + str(action))
+        actionsData = profileData['actions']
+        for actionData in actionsData:
+            print ('Action Data:' + str(actionData))
+            action = Action()
+            action.initialize(actionData)
+            self._actions.append(action)
         return True
