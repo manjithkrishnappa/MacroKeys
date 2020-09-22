@@ -11,31 +11,56 @@ class Config:
     _keyboardName = ''
     _profiles=[]
 
+    __instance = None
+    @staticmethod 
+    def getInstance():
+        """ Static access method. """
+        if Config.__instance == None:
+            Config()
+        return Config.__instance
+
     def __init__(self):
         print ("Config Constructor")
+        """ Virtually private constructor. """
+        if Config.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            Config.__instance = self
         
     def initialize(self):
         print ("Initilizing Config")
-        self._checkElseCreateConfFile()
-        self._readConfFile()
+        if(self._checkElseCreateConfFile() is not True):
+            return False
+        if(self._readConfFile() is not True):
+            return False
         return True
     
     def _checkElseCreateConfFile(self):
         #check if the directory exists else create the directory
         if not path.isdir(self._filePath):
-            print ('Directory does not Exist! Creating...')
-            os.makedirs(self._filePath)
+            try:
+                print ('Directory does not Exist! Creating...')
+                os.makedirs(self._filePath)
+            except:
+                print ('Could not create directory for config file')
+                return False
         if not path.isfile(self._fileNameWithPath):
             print ('Conf file does not Exist! Creating...')
-            self._createDefaultConf()
+            if (self._createDefaultConf() is not True):
+                return False
         return True
     
     def _createDefaultConf(self):
         data = {}
         data['keyboard_name'] = "board1"
         data['profiles'] = []
-        with open(self._fileNameWithPath, 'w') as outfile:
-            json.dump(data, outfile)
+        try:
+            with open(self._fileNameWithPath, 'w') as outfile:
+                json.dump(data, outfile)
+        except:
+            print ('Could not create default config file')
+            return False
+        return True
     
     def _readConfFile(self):
         try:

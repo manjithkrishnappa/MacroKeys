@@ -8,7 +8,7 @@ class Main:
 
   def initialize(self):
     try:
-      if(self.conf.initialize() is not True):
+      if(Config.getInstance().initialize() is not True):
         return false
       if(self.board.initialize() is not True):
         return false
@@ -24,7 +24,6 @@ class Main:
   def __init__(self):
     #Create Obejects of other classes
     self.board = Board()
-    self.conf = Config()
 
     if(self.initialize() is not True):
       print ('Could not initialize; Exiting!')
