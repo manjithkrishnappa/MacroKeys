@@ -6,6 +6,8 @@ from evdev import InputDevice, categorize, ecodes
 class Board:
     def __init__(self):
         print ("Board Constructor")
+        self._observers = set()
+        #self._key
 
     def initialize(self):
         try:
@@ -26,65 +28,34 @@ class Board:
     def run(self):
         for event in self.dev.read_loop():
             if event.type == ecodes.EV_KEY:
-                key = categorize(event)
-                if key.keystate == key.key_down:
-                    print (key.keycode)
-                    if key.keycode == 'KEY_KPENTER':
+                self._key = categorize(event)
+                self._notify()
+                if self._key.keystate == self._key.key_down:
+                    print (self._key.keycode)
+                    if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
                         break
-                    if key.keycode == 'KEY_KP0':
-                        os.system('xdotool key Super;')
-                        os.system('xdotool type "steam"; xdotool key Return')
-                    if key.keycode == 'KEY_KP1':
-                        self.OpenSlack()
-                    if key.keycode == 'KEY_KP2':
-                        self.OpenBlueJeans()
-                    if key.keycode == 'KEY_A':
-                        self.TypeGitAdd()
-                    if key.keycode == 'KEY_C':
-                        self.TypeGitCommit()
-                    if key.keycode == 'KEY_S':
-                        self.TypeGitPush()
-                    if key.keycode == 'KEY_L':
-                        self.TypeGitPull()
+                    if self._key.keycode == 'KEY_W':
+                        self.SetUpWW()
 
     def cleanUp(self):
         self.dev.ungrab()
-    
-    def OpenSlack(self):
-        os.system('xdotool key Super')
-        time.sleep(1)
-        os.system('xdotool type "slack"')
-        time.sleep(1)
-        os.system('xdotool key Return')
 
-    def OpenBlueJeans(self):
-        os.system('xdotool key Super')
-        time.sleep(1)
-        os.system('xdotool type "bluejeans"')
-        time.sleep(1)
-        os.system('xdotool key Return')
+    #Obeserver Pattern Functions
+    def attach(self, observer):
+        observer._subject = self
+        self._observers.add(observer)
+
+    def detach(self, observer):
+        observer._subject = None
+        self._observers.discard(observer)
+
+    def _notify(self):
+        for observer in self._observers:
+            observer.update(self._key)
 
     def SetUpWW(self):
         cmdSetupScript = 'sh /home/mkrishnappa/Work/WFS/set_up_workspace/setup_ww_develop.sh'
         proc1=subprocess.Popen(cmdSetupScript, shell=True, stdout=subprocess.PIPE)
         proc1.communicate()[0]
-
-    def TypeGitAdd(self):
-        os.system('xdotool type "git add -u"')
-        time.sleep(1)
-        os.system('xdotool key Return')
-
-    def TypeGitCommit(self):
-        os.system('xdotool type "git commit -m"')
-
-    def TypeGitPush(self):
-        os.system('xdotool type "git push"')
-        time.sleep(1)
-        os.system('xdotool key Return')
-
-    def TypeGitPull(self):
-        os.system('xdotool type "git pull"')
-        time.sleep(1)
-        os.system('xdotool key Return')
     
