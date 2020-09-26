@@ -6,6 +6,8 @@ from evdev import InputDevice, categorize, ecodes
 class Board:
     def __init__(self):
         print ("Board Constructor")
+        self._observers = set()
+        #self._key
 
     def initialize(self):
         try:
@@ -26,30 +28,44 @@ class Board:
     def run(self):
         for event in self.dev.read_loop():
             if event.type == ecodes.EV_KEY:
-                key = categorize(event)
-                if key.keystate == key.key_down:
-                    print (key.keycode)
-                    if key.keycode == 'KEY_KPENTER':
+                self._key = categorize(event)
+                self._notify()
+                if self._key.keystate == self._key.key_down:
+                    print (self._key.keycode)
+                    if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
                         break
-                    if key.keycode == 'KEY_KP0':
+                    if self._key.keycode == 'KEY_KP0':
                         os.system('xdotool key Super;')
                         os.system('xdotool type "steam"; xdotool key Return')
-                    if key.keycode == 'KEY_KP1':
+                    if self._key.keycode == 'KEY_KP1':
                         self.OpenSlack()
-                    if key.keycode == 'KEY_KP2':
+                    if self._key.keycode == 'KEY_KP2':
                         self.OpenBlueJeans()
-                    if key.keycode == 'KEY_A':
+                    if self._key.keycode == 'KEY_A':
                         self.TypeGitAdd()
-                    if key.keycode == 'KEY_C':
+                    if self._key.keycode == 'KEY_C':
                         self.TypeGitCommit()
-                    if key.keycode == 'KEY_S':
+                    if self._key.keycode == 'KEY_S':
                         self.TypeGitPush()
-                    if key.keycode == 'KEY_L':
+                    if self._key.keycode == 'KEY_L':
                         self.TypeGitPull()
 
     def cleanUp(self):
         self.dev.ungrab()
+
+    #Obeserver Pattern Functions
+    def attach(self, observer):
+        observer._subject = self
+        self._observers.add(observer)
+
+    def detach(self, observer):
+        observer._subject = None
+        self._observers.discard(observer)
+
+    def _notify(self):
+        for observer in self._observers:
+            observer.update(self._key)
     
     def OpenSlack(self):
         os.system('xdotool key Super')
