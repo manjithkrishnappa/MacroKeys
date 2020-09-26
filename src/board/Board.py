@@ -35,21 +35,8 @@ class Board:
                     if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
                         break
-                    if self._key.keycode == 'KEY_KP0':
-                        os.system('xdotool key Super;')
-                        os.system('xdotool type "steam"; xdotool key Return')
-                    if self._key.keycode == 'KEY_KP1':
-                        self.OpenSlack()
-                    if self._key.keycode == 'KEY_KP2':
-                        self.OpenBlueJeans()
-                    if self._key.keycode == 'KEY_A':
-                        self.TypeGitAdd()
-                    if self._key.keycode == 'KEY_C':
-                        self.TypeGitCommit()
-                    if self._key.keycode == 'KEY_S':
-                        self.TypeGitPush()
-                    if self._key.keycode == 'KEY_L':
-                        self.TypeGitPull()
+                    if self._key.keycode == 'KEY_W':
+                        self.SetUpWW()
 
     def cleanUp(self):
         self.dev.ungrab()
@@ -66,41 +53,9 @@ class Board:
     def _notify(self):
         for observer in self._observers:
             observer.update(self._key)
-    
-    def OpenSlack(self):
-        os.system('xdotool key Super')
-        time.sleep(1)
-        os.system('xdotool type "slack"')
-        time.sleep(1)
-        os.system('xdotool key Return')
-
-    def OpenBlueJeans(self):
-        os.system('xdotool key Super')
-        time.sleep(1)
-        os.system('xdotool type "bluejeans"')
-        time.sleep(1)
-        os.system('xdotool key Return')
 
     def SetUpWW(self):
         cmdSetupScript = 'sh /home/mkrishnappa/Work/WFS/set_up_workspace/setup_ww_develop.sh'
         proc1=subprocess.Popen(cmdSetupScript, shell=True, stdout=subprocess.PIPE)
         proc1.communicate()[0]
-
-    def TypeGitAdd(self):
-        os.system('xdotool type "git add -u"')
-        time.sleep(1)
-        os.system('xdotool key Return')
-
-    def TypeGitCommit(self):
-        os.system('xdotool type "git commit -m"')
-
-    def TypeGitPush(self):
-        os.system('xdotool type "git push"')
-        time.sleep(1)
-        os.system('xdotool key Return')
-
-    def TypeGitPull(self):
-        os.system('xdotool type "git pull"')
-        time.sleep(1)
-        os.system('xdotool key Return')
     
