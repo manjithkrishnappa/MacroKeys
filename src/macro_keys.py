@@ -13,9 +13,9 @@ class Main:
     try:
       if(Config.getInstance().initialize() is False):
         return False
-      if(self.activeProfile.initialize(self._activeProfileIndex) is False):
-        return False
       if(self.board.initialize() is False):
+        return False
+      if(self.activeProfile.initialize(self._activeProfileIndex, self.board) is False):
         return False
       return True
     except:
