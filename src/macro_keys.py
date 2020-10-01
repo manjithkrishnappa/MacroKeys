@@ -65,7 +65,8 @@ class Main:
       return
 
     #This will make the operation run in a loop and keep polling for input on the board
-    # self.board.run()
+    #TODO: this should run in its own thread.
+    self.board.run()
 
 if __name__ == "__main__":
     main = Main()
