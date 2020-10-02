@@ -4,6 +4,8 @@ import os
 from evdev import InputDevice, categorize, ecodes
 
 class Board:
+    _shouldRun = True
+
     def __init__(self):
         print ("Board Constructor")
         self._observers = set()
@@ -26,7 +28,10 @@ class Board:
             return False
     
     def run(self):
+        print ('Thread Run')
         for event in self.dev.read_loop():
+            if( self._shouldRun is False):
+                break
             if event.type == ecodes.EV_KEY:
                 self._key = categorize(event)
                 self._notify()
@@ -34,11 +39,11 @@ class Board:
                     print (self._key.keycode)
                     if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
-                        break
-                    if self._key.keycode == 'KEY_W':
-                        self.SetUpWW()
+                        #TODO: If we keep this then we should let the main function know that the thread has stopped
+                        self._shouldRun = False
 
     def cleanUp(self):
+        self._shouldRun = False
         self.dev.ungrab()
 
     #Obeserver Pattern Functions
@@ -52,10 +57,4 @@ class Board:
 
     def _notify(self):
         for observer in self._observers:
-            observer.update(self._key)
-
-    def SetUpWW(self):
-        cmdSetupScript = 'sh /home/mkrishnappa/Work/WFS/set_up_workspace/setup_ww_develop.sh'
-        proc1=subprocess.Popen(cmdSetupScript, shell=True, stdout=subprocess.PIPE)
-        proc1.communicate()[0]
-    
+            observer.update(self._key)    

@@ -5,6 +5,7 @@ from conf.Config import Config
 from board.Board import Board
 from Profile import Profile
 import gi
+import threading
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
@@ -32,12 +33,12 @@ class Main:
       self.board.cleanUp()
   
   def InitializeUI(self):
+    #TODO: The application should be a system tray app
     gladeFile = './ui/MacroKeys_Configurator.glade'
     self.builder = gtk.Builder()
     self.builder.add_from_file(gladeFile)
 
     window = self.builder.get_object("main")
-    #window.connect("delete-event", self.cleanUpUI)
     window.connect("destroy", self.cleanUpUI)
     window.show()
     print ("Should be showing the window now")
@@ -64,9 +65,8 @@ class Main:
       print ('Could not initialize UI; Exiting!')
       return
 
-    #This will make the operation run in a loop and keep polling for input on the board
-    #TODO: this should run in its own thread.
-    self.board.run()
+    boardThread = threading.Thread(target= self.board.run)
+    boardThread.start()
 
 if __name__ == "__main__":
     main = Main()
