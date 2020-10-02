@@ -6,6 +6,8 @@ from board.Board import Board
 from Profile import Profile
 import gi
 import threading
+import os
+# from pathlib import Path
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
@@ -34,9 +36,12 @@ class Main:
   
   def InitializeUI(self):
     #TODO: The application should be a system tray app
+    absPathGladeFile = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+    absPathGladeFile = os.path.join(absPathGladeFile, '../ui/MacroKeys_Configurator.glade')
+    print (f'Absolute path to the Glade file is {1}', absPathGladeFile)
     gladeFile = './ui/MacroKeys_Configurator.glade'
     self.builder = gtk.Builder()
-    self.builder.add_from_file(gladeFile)
+    self.builder.add_from_file(absPathGladeFile)
 
     window = self.builder.get_object("main")
     window.connect("destroy", self.cleanUpUI)
