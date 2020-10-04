@@ -5,10 +5,12 @@ import os
 
 class Configurator:
     def __init__(self):
-        print ('Configurator Constructor')
+          self._showUI = False
 
     def Initialize(self):
         #TODO: The application should be a system tray app
+        if(self._showUI is False):
+            return
         absPathGladeFile = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
         absPathGladeFile = os.path.join(absPathGladeFile, '../../ui/MacroKeys_Configurator.glade')
         print (f'Absolute path to the Glade file is {1}', absPathGladeFile)
@@ -24,5 +26,7 @@ class Configurator:
         return True
 
     def cleanUp(self, widget):
+        if(self._showUI is False):
+            return
         #TODO: If we keep this then we should let the main function know that the thread has stopped
         gtk.main_quit(widget)

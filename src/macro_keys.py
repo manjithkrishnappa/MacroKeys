@@ -37,7 +37,7 @@ class Main:
   def cleanUp(self):
       print("Clean Up called!")
       self.board.cleanUp()
-      self._configurator.cleanUp()
+      #self._configurator.cleanUp()
 
   def __init__(self):
     #Create Obejects of other classes
