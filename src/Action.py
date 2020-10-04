@@ -19,7 +19,8 @@ class Observer(metaclass=abc.ABCMeta):
 class Action(Observer):
 
     def __init__(self):
-        print ('Action Constructor')
+        # print ('Action Constructor')
+        pass
     
     def initialize(self, a_Data):
         # print ('Action Initialization, Action Data: ' + str(a_Data))
