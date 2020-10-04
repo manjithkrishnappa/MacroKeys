@@ -22,8 +22,13 @@ class Configurator:
         window.connect("destroy", self.cleanUp)
         window.show()
         print ("Should be showing the window now")
-    
+
         return True
+
+    def runGTK_Main(self):
+        if(self._showUI is False):
+            return
+        gtk.main()
 
     def cleanUp(self, widget):
         if(self._showUI is False):

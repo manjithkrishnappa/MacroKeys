@@ -7,9 +7,8 @@ from configurator.Configurator import Configurator
 from Profile import Profile
 import gi
 import threading
+import sys
 # from pathlib import Path
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk as gtk
 
 class Main:
   #TODO: This should come from a save file
@@ -31,13 +30,20 @@ class Main:
     except Exception as exp:
       print ('Initialization Failed')
       print (exp)
-      self.cleanUp()
       return False
 
   def cleanUp(self):
       print("Clean Up called!")
       self.board.cleanUp()
       #self._configurator.cleanUp()
+
+  def parseArguments(self):
+    if len(sys.argv) == 0:
+      print ('No Arguments Passed!')
+      return
+    for arg in sys.argv:
+      print (f'Argument: {arg}')
+
 
   def __init__(self):
     #Create Obejects of other classes
@@ -50,13 +56,11 @@ class Main:
       print ('Could not initialize; Exiting!')
       return
 
-    # if(self.InitializeUI() is False):
-    #   print ('Could not initialize UI; Exiting!')
-    #   return
-
     boardThread = threading.Thread(target= self.board.run)
     boardThread.start()
+    
+    self._configurator.runGTK_Main()
 
 if __name__ == "__main__":
     main = Main()
-    gtk.main()
+    
