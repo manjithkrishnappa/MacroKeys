@@ -3,14 +3,16 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 import os
 
+#TODO: The application should be a system tray app
 class Configurator:
     def __init__(self):
           self._showUI = False
 
-    def Initialize(self):
-        #TODO: The application should be a system tray app
+    def Initialize(self, showUI):
+        self._showUI = showUI
         if(self._showUI is False):
             return
+
         absPathGladeFile = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
         absPathGladeFile = os.path.join(absPathGladeFile, '../../ui/MacroKeys_Configurator.glade')
         print (f'Absolute path to the Glade file is {1}', absPathGladeFile)
