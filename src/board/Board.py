@@ -4,12 +4,19 @@ import os
 from evdev import InputDevice, categorize, ecodes
 
 class Board:
+    _shouldRun = True
+    # Use this flag to quickly turn off all functionality in the class while developing
+    _shouldInitialize = True
+
+
     def __init__(self):
         print ("Board Constructor")
         self._observers = set()
         #self._key
 
     def initialize(self):
+        if (self._shouldInitialize is False):
+            return
         try:
             cmdFindBoardEvent = 'grep -A 5 -w \'"SEM USB Keyboard"\' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
             proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
@@ -26,7 +33,12 @@ class Board:
             return False
     
     def run(self):
+        if (self._shouldInitialize is False):
+            return
+        print ('Thread Run')
         for event in self.dev.read_loop():
+            if( self._shouldRun is False):
+                break
             if event.type == ecodes.EV_KEY:
                 self._key = categorize(event)
                 self._notify()
@@ -34,28 +46,30 @@ class Board:
                     print (self._key.keycode)
                     if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
-                        break
-                    if self._key.keycode == 'KEY_W':
-                        self.SetUpWW()
+                        #TODO: If we keep this then we should let the main function know that the thread has stopped
+                        self._shouldRun = False
 
     def cleanUp(self):
+        if (self._shouldInitialize is False):
+            return
+        self._shouldRun = False
         self.dev.ungrab()
 
     #Obeserver Pattern Functions
     def attach(self, observer):
+        if (self._shouldInitialize is False):
+            return
         observer._subject = self
         self._observers.add(observer)
 
     def detach(self, observer):
+        if (self._shouldInitialize is False):
+            return
         observer._subject = None
         self._observers.discard(observer)
 
     def _notify(self):
+        if (self._shouldInitialize is False):
+            return
         for observer in self._observers:
-            observer.update(self._key)
-
-    def SetUpWW(self):
-        cmdSetupScript = 'sh /home/mkrishnappa/Work/WFS/set_up_workspace/setup_ww_develop.sh'
-        proc1=subprocess.Popen(cmdSetupScript, shell=True, stdout=subprocess.PIPE)
-        proc1.communicate()[0]
-    
+            observer.update(self._key)    
