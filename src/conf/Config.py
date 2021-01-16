@@ -89,4 +89,10 @@ class Config:
             print (f'Trying to get {a_iIndex} profile. Total Available profiles {len(self._profiles)}')
             return False
         return self._profiles[a_iIndex]
+
+    #Getter function for Keyboard Name
+    def get_keyboardName(self):
+        return self._keyboardName
+    
+    keyboardName = property (get_keyboardName)
         

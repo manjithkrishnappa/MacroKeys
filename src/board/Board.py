@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 from evdev import InputDevice, categorize, ecodes
+from conf.Config import Config
 
 class Board:
     _shouldRun = True
@@ -18,7 +19,8 @@ class Board:
         if (self._shouldInitialize is False):
             return
         try:
-            cmdFindBoardEvent = 'grep -A 5 -w \'"SEM USB Keyboard"\' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
+            keyboardName = Config.getInstance().keyboardName
+            cmdFindBoardEvent = 'grep -A 5 -w ' + keyboardName + ' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
             proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
             boardEvent = proc.communicate()[0]
             boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
