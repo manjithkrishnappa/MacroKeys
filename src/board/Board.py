@@ -20,18 +20,19 @@ class Board:
             return
         try:
             keyboardName = Config.getInstance().keyboardName
-            cmdFindBoardEvent = 'grep -A 5 -w ' + keyboardName + ' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
+            cmdFindBoardEvent = 'grep -A 5 -w ' + keyboardName + ' /proc/bus/input/devices |grep sysrq |awk \'{print $5}\''
             proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
             boardEvent = proc.communicate()[0]
             boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
+            print ("boardEvent: " + boardEvent)
             boardEventFullPath = '/dev/input/'  + boardEvent
-            print (boardEventFullPath)
+            print ("boardEventFullPath: " + boardEventFullPath)
             self.dev = InputDevice(boardEventFullPath)
             print('Starting the macro service')
             self.dev.grab()
             return True
-        except:
-            print ('Could not get the grab board')
+        except Exception as exp:
+            print ('Could not get the grab board: ' + exp)
             return False
     
     def run(self):
