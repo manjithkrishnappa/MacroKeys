@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+import evdev
 from evdev import InputDevice, categorize, ecodes
 from conf.Config import Config
 
@@ -19,19 +20,18 @@ class Board:
         if (self._shouldInitialize is False):
             return
         try:
-            keyboardName = Config.getInstance().keyboardName
-            cmdFindBoardEvent = 'grep -A 5 -w ' + keyboardName + ' /proc/bus/input/devices |grep sysrq |awk \'{print $4}\''
-            proc=subprocess.Popen(cmdFindBoardEvent, shell=True, stdout=subprocess.PIPE)
-            boardEvent = proc.communicate()[0]
-            boardEvent = boardEvent.decode('UTF-8').rstrip('\n')
-            boardEventFullPath = '/dev/input/'  + boardEvent
-            print (boardEventFullPath)
-            self.dev = InputDevice(boardEventFullPath)
-            print('Starting the macro service')
-            self.dev.grab()
-            return True
-        except:
-            print ('Could not get the grab board')
+            devices = [InputDevice(path) for path in evdev.list_devices()]
+            for device in devices:
+                # print(device.path, device.name, device.phys)
+                if device.name == Config.getInstance().keyboardName:
+                    print('Keyboard Found:', device.name)
+                    self.dev = device
+                    self.dev.grab()
+                    return True
+            print ('Could not find the board: ' + Config.getInstance().keyboardName + '. Make sure the board is connected')
+            return False
+        except Exception as exp:
+            print ('Could not get the grab board: ' + exp)
             return False
     
     def run(self):
