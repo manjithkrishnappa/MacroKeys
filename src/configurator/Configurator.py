@@ -25,7 +25,13 @@ class Configurator:
         window.show()
         print ("Should be showing the window now")
 
+        self.ConnectSignals()
+
         return True
+    
+    def ConnectSignals(self):
+        btnTryMe = self.builder.get_object("btnTryMe")
+        btnTryMe.connect("released",self.hello)
 
     def runGTK_Main(self):
         if(self._showUI is False):
@@ -37,3 +43,6 @@ class Configurator:
             return
         #TODO: If we keep this then we should let the main function know that the thread has stopped
         gtk.main_quit(widget)
+
+    def hello(self, button):
+        print("hell, goodbye world!")
