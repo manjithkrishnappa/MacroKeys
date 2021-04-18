@@ -8,13 +8,37 @@
     <property name="default-width">800</property>
     <property name="default-height">400</property>
     <child>
-      <object class="GtkButton" id="btnTryMe">
-        <property name="label" translatable="yes">Try Me!</property>
+      <object class="GtkFrame" id="frameBase">
         <property name="visible">True</property>
-        <property name="can-focus">True</property>
-        <property name="receives-default">True</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
+        <property name="can-focus">False</property>
+        <property name="label-xalign">0</property>
+        <property name="shadow-type">none</property>
+        <child>
+          <object class="GtkAlignment">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="left-padding">12</property>
+            <child>
+              <object class="GtkButton" id="btnTryMe">
+                <property name="label" translatable="yes">Try Me</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="margin-left">905</property>
+                <property name="margin-top">604</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="label">
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Frame Label</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>
