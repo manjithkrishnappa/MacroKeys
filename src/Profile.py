@@ -23,3 +23,8 @@ class Profile:
             refBoard.attach(action)
             self._actions.append(action)
         return True
+
+    def cleanUP(self, refBoard):
+        # for act in self._actions:
+        #     refBoard.detach(act)
+        print ('Perform any clean up here')
