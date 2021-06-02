@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import time
+from Action import Observer
 from conf.Config import Config
 from board.Board import Board
 from configurator.Configurator import Configurator
@@ -10,7 +11,7 @@ import threading
 import sys
 # from pathlib import Path
 
-class Main:
+class Main(Observer):
   _isInitialized = False
 
   #TODO: This should come from a save file
@@ -27,8 +28,8 @@ class Main:
         return False
       if(self.activeProfile.initialize(self._activeProfileIndex, self.board) is False):
         return False
-      if(self._configurator.Initialize(self._argShowUI) is False):
-        return False
+      # if(self._configurator.Initialize(self._argShowUI) is False):
+      #   return False
       _isInitialized = True
       return True
     except Exception as exp:
@@ -38,8 +39,9 @@ class Main:
 
   def cleanUp(self):
       print("Clean Up called!")
+      self.activeProfile.cleanUP(self.board)
+      # self._configurator.cleanUp()
       self.board.cleanUp()
-      #self._configurator.cleanUp()
 
   def parseArguments(self):
     if len(sys.argv) == 0:
@@ -62,16 +64,23 @@ class Main:
     Config.getInstance()
     self.board = Board()
     self.activeProfile = Profile()
-    self._configurator = Configurator()
+    # self._configurator = Configurator()
 
     if(self.initialize() is False):
       print ('Could not initialize; Exiting!')
       return
 
-    boardThread = threading.Thread(target= self.board.run)
-    boardThread.start()
+    self._boardThread = threading.Thread(target= self.board.run)
+    self._boardThread.start()
     
-    self._configurator.runGTK_Main()
+    # self._configurator.runGTK_Main()
+
+    self.board.attachEndObserver(self)
+    pass
+
+  def update(self, arg):
+    print ('Cleaning up and exiting!')
+    self.cleanUp()
 
 if __name__ == "__main__":
     main = Main()
