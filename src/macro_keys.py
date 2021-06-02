@@ -79,7 +79,7 @@ class Main(Observer):
     pass
 
   def update(self, arg):
-    print ('End of the world')
+    print ('Cleaning up and exiting!')
     self.cleanUp()
 
 if __name__ == "__main__":
