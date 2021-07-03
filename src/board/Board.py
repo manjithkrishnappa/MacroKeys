@@ -14,6 +14,7 @@ class Board:
     def __init__(self):
         print ("Board Constructor")
         self._observers = set()
+        self._endObservers = set()
         #self._key
 
     def initialize(self):
@@ -48,14 +49,22 @@ class Board:
                     print (self._key.keycode)
                     if self._key.keycode == 'KEY_KPENTER':
                         print ('Going to break out of the loop')
-                        #TODO: If we keep this then we should let the main function know that the thread has stopped
+                        self._notifyClose()
                         self._shouldRun = False
+        print('Broken out of the thread function')
 
     def cleanUp(self):
         if (self._shouldInitialize is False):
             return
+        for obs in self._observers:
+            obs._subject = None
+        self._observers= None
+        for endObs in self._endObservers:
+            endObs._subject = None
+        self._endObservers = None
         self._shouldRun = False
         self.dev.ungrab()
+        self.dev = None
 
     #Obeserver Pattern Functions
     def attach(self, observer):
@@ -64,14 +73,32 @@ class Board:
         observer._subject = self
         self._observers.add(observer)
 
+    def attachEndObserver(self, Observer):
+        if (self._shouldInitialize is False):
+            return
+        Observer._subject = self
+        self._endObservers.add(Observer)
+
     def detach(self, observer):
         if (self._shouldInitialize is False):
             return
         observer._subject = None
         self._observers.discard(observer)
 
+    def detachEndObserver(self, Observer):
+        if (self._shouldInitialize is False):
+            return
+        Observer._subject = None
+        self._endObservers.discard(Observer)
+
     def _notify(self):
         if (self._shouldInitialize is False):
             return
         for observer in self._observers:
-            observer.update(self._key)    
+            observer.update(self._key)
+    
+    def _notifyClose(self):
+        if (self._shouldInitialize is False):
+            return
+        for observer in self._endObservers:
+            observer.update(self._key)

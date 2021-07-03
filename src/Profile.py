@@ -14,12 +14,13 @@ class Profile:
         if(profileData is False):
             print ('Could not get the profile data from configuration!')
             return False
-        # print ('Profile Data:' + str(profileData))
         actionsData = profileData['actions']
         for actionData in actionsData:
-            #print ('Action Data:' + str(actionData))
             action = Action()
             action.initialize(actionData)
             refBoard.attach(action)
             self._actions.append(action)
         return True
+
+    def cleanUP(self, refBoard):
+        print ('Perform any clean up here')
