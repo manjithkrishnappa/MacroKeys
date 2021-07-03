@@ -6,7 +6,9 @@ import os
 #TODO: The application should be a system tray app
 class Configurator:
     def __init__(self):
-          self._showUI = False
+        print ("Hello Configurator")
+        self.Initialize(True)
+        self.runGTK_Main()
 
     def Initialize(self, showUI):
         self._showUI = showUI
@@ -46,3 +48,6 @@ class Configurator:
 
     def hello(self, button):
         print("hell, goodbye world!")
+
+if __name__ == "__main__":
+    main = Configurator()
